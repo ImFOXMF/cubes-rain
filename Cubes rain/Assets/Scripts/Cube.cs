@@ -22,14 +22,8 @@ public class Cube : MonoBehaviour
         if (!_isTimerStarted && collision.gameObject.GetComponent<Platform>() != null)
         {
             _isTimerStarted = true;
-            StartCoroutine(DestroyAfterDelay());
+            Destroy(gameObject, _lifetime);
         }
-    }
-
-    private IEnumerator DestroyAfterDelay()
-    {
-        yield return new WaitForSeconds(_lifetime);
-        Destroy(gameObject);
     }
 
     public bool GetIsChangedColor() => _isChangedColor;

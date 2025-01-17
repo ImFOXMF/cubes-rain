@@ -8,7 +8,7 @@ public class Spawner : MonoBehaviour
     [SerializeField] private float _spawnInterval = 1f;
     [SerializeField] private int _poolCapacity = 5;
     [SerializeField] private int _poolMaxSize = 5;
-    
+
     [SerializeField] private Transform _platform;
     [SerializeField] private float _heightAbovePlatform = 20f;
     [SerializeField] private float _spawnMargin = 0.5f;
@@ -16,6 +16,7 @@ public class Spawner : MonoBehaviour
     private ObjectPool<GameObject> _pool;
     private Vector3 _platformSize;
     private Vector3 _platformPosition;
+    private int _deviderForPlatform = 2;
 
     private void Awake()
     {
@@ -38,20 +39,14 @@ public class Spawner : MonoBehaviour
 
     private void ActionOnGet(GameObject obj)
     {
-        float spawnX = _platformPosition.x + Random.Range(
-            -_platformSize.x/2 + _spawnMargin, 
-            _platformSize.x/2 - _spawnMargin
-        );
-        
+        float spawnX = FindSpawnPoint(_platformPosition.x, _platformSize.x);
+
         float spawnHeight = _platformPosition.y + _heightAbovePlatform;
         
-        float spawnZ = _platformPosition.z + Random.Range(
-            -_platformSize.z/2 + _spawnMargin, 
-            _platformSize.z/2 - _spawnMargin
-        );
+        float spawnZ = FindSpawnPoint(_platformPosition.z, _platformSize.z);
 
         Vector3 spawnPosition = new Vector3(spawnX, spawnHeight, spawnZ);
-        
+
         obj.transform.position = spawnPosition;
         obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
         obj.SetActive(true);
@@ -65,5 +60,14 @@ public class Spawner : MonoBehaviour
     private void GetObject()
     {
         _pool.Get();
+    }
+
+    private float FindSpawnPoint(float _platformPosition, float _platformSize)
+    {
+        float spawnPoint = _platformPosition + Random.Range(
+            -_platformSize / _deviderForPlatform + _spawnMargin,
+            _platformSize / _deviderForPlatform - _spawnMargin);
+        
+        return spawnPoint;
     }
 }
