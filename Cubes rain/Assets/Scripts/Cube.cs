@@ -16,6 +16,10 @@ public class Cube : MonoBehaviour
         Random random = new Random();
         _lifetime = random.Next(_minLifetime, _maxLifetime);
     }
+    
+    public bool GetIsChangedColor() => _isChangedColor;
+
+    public bool ChangeColor() => _isChangedColor = true;
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -25,8 +29,4 @@ public class Cube : MonoBehaviour
             Destroy(gameObject, _lifetime);
         }
     }
-
-    public bool GetIsChangedColor() => _isChangedColor;
-
-    public bool ChangeColor() => _isChangedColor = true;
 }

@@ -29,15 +29,20 @@ public class Spawner : MonoBehaviour
 
         _pool = new ObjectPool<GameObject>(
             createFunc: () => Instantiate(_cubePrefab),
-            actionOnGet: (obj) => ActionOnGet(obj),
+            actionOnGet: (obj) => GetAction(obj),
             actionOnRelease: (obj) => obj.SetActive(false),
             actionOnDestroy: (obj) => Destroy(obj),
             collectionCheck: true,
             defaultCapacity: _poolCapacity,
             maxSize: _poolMaxSize);
     }
+    
+    private void Start()
+    {
+        InvokeRepeating(nameof(GetObject), 0.0f, _spawnInterval);
+    }
 
-    private void ActionOnGet(GameObject obj)
+    private void GetAction(GameObject obj)
     {
         float spawnX = FindSpawnPoint(_platformPosition.x, _platformSize.x);
 
@@ -50,11 +55,6 @@ public class Spawner : MonoBehaviour
         obj.transform.position = spawnPosition;
         obj.GetComponent<Rigidbody>().velocity = Vector3.zero;
         obj.SetActive(true);
-    }
-
-    private void Start()
-    {
-        InvokeRepeating(nameof(GetObject), 0.0f, _spawnInterval);
     }
 
     private void GetObject()

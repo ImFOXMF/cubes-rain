@@ -6,12 +6,12 @@ public class ColorChanger : MonoBehaviour
 {
     private void OnCollisionEnter(Collision other)
     {
-        GameObject otherObject = other.gameObject;
-        Cube cube = otherObject.GetComponent<Cube>();
+        GameObject cubeObject = gameObject;
+        Cube cube = cubeObject.GetComponent<Cube>();
         
         if (cube != null && !cube.GetIsChangedColor())
         {
-            Renderer otherRenderer = otherObject.GetComponent<Renderer>();
+            Renderer otherRenderer = cubeObject.GetComponent<Renderer>();
             SetRandomColor(otherRenderer);
             cube.ChangeColor();
         }
