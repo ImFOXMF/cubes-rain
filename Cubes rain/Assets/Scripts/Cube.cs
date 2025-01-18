@@ -1,5 +1,6 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Pool;
 using Random = System.Random;
 
 public class Cube : MonoBehaviour
@@ -10,6 +11,7 @@ public class Cube : MonoBehaviour
     private float _lifetime;
     private bool _isChangedColor = false;
     private bool _isTimerStarted = false;
+    private ObjectPool<Cube> _pool;
 
     private void Start()
     {
@@ -21,12 +23,29 @@ public class Cube : MonoBehaviour
 
     public bool ChangeColor() => _isChangedColor = true;
 
+    public void SetPool(ObjectPool<Cube> pool)
+    {
+        _pool = pool;
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
         if (!_isTimerStarted && collision.gameObject.GetComponent<Platform>() != null)
         {
             _isTimerStarted = true;
-            Destroy(gameObject, _lifetime);
+            StartCoroutine(ReturnToPoolAfterDelay());
+        }
+    }
+
+    private IEnumerator ReturnToPoolAfterDelay()
+    {
+        yield return new WaitForSeconds(_lifetime);
+        
+        if (_pool != null)
+        {
+            _pool.Release(this);
+            _isChangedColor = false;
+            _isTimerStarted = false;
         }
     }
 }
